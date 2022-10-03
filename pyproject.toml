@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "django-oauth2-backend"
+version = "0.1.0"
+description = ""
+authors = ["ShengChih"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "django_oauth2_backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+djangorestframework = "^3.14.0"
+psycopg2 = "^2.9.3"
+Django = "^4.1.1"
+django-allauth = "^0.51.0"
+uWSGI = "^2.0.20"
+
+[tool.poetry.group.dev.dependencies]
+drf-spectacular = "^0.24.2"
+black = "^22.8.0"
+flake8 = "^5.0.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,1 +1,1 @@
-# django-oauth2-basic-integrated
+# Integrate Django and SocialProvider OAuth2 feature

@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  nginx:
+    image: nginxinc/nginx-unprivileged:alpine
+    container_name: django_oauth2_nginx
+    #command: 'sleep infinity'
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    #command: cp /etc/nginx/conf.d/certs/devRootCA.crt /usr/share/ca-certificates/ && update-ca-certificates && nginx -g "daemon off;"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/system:/tmp/
+
+
+  django_oauth2_backend:
+    build: .
+    container_name: 'django_oauth2_backend'
+    command: 'sleep infinity'
+    ports:
+      - '8000:8000'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: django_oauth2_backend:latest
+    volumes:
+      - ./:/home/ec2-user/django_oauth2_backend
+      - /home/ec2-user/.aws:/home/ec2-user/.aws
+      - /home/ec2-user/.ssh:/home/ec2-user/.ssh
+      - ./.cache:/home/ec2-user/.cache
+    environment:
+      - PATH:/home/ec2-user/.poetry/bin:/usr/local/bin:/usr/bin:/user/local/sbin:/home/ec2-user/.local/bin:$PATH
+      - DB_HOST=django_oauth_pgdb
+      - DB_NAME=django_oauth
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - pgdb
+      - redis
+
+  pgdb:
+    image: postgres:alpine
+    container_name: django_oauth_pgdb
+    restart: always
+    volumes:
+      - django_oauth_pgsql_storage:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: django_oauth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PG_DATA: /var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: django_oauth_pgadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'ms0529756@gmail.com'
+      PGADMIN_DEFAULT_PASSWORD: 'ms0529756@gmail.com'
+    volumes:
+      - django_oauth_pgadmin_storage:/var/lib/pgadmin
+
+  redis:
+    image: redis:alpine
+    container_name: django_oauth_redis
+    restart: always
+    volumes:
+      - django_oauth_redis_storage:/data
+
+  redis-commander:
+    container_name: django_oauth_redis_commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    ports:
+      - 5005:8081
+    environment:
+      #- URL_PREFIX=/redis-management
+      - REDIS_HOSTS=redis:redis:6379
+    depends_on:
+      - redis
+
+
+  swaggerapi:
+    # poetry run python manage.py spectacular --file schema.yml
+    # for displaying api doc on swaggerapi service.
+    # support OpenAPI v3
+    container_name: django_oauth_swagger_openapi_v3
+    image: swaggerapi/swagger-ui:latest
+    environment:
+      SWAGGER_JSON: '/schema.yml'
+    volumes:
+      - ./src/schema.yml:/schema.yml
+    ports:
+      - 8081:8080
+
+
+networks:
+  db_net:
+
+volumes:
+  django_oauth_pgsql_storage:
+  django_oauth_redis_storage:
+  django_oauth_pgadmin_storage:
