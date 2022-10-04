@@ -3,7 +3,7 @@ version: '3.9'
 services:
   nginx:
     image: nginxinc/nginx-unprivileged:alpine
-    container_name: django_oauth2_nginx
+    container_name: webserv.oauth2
     #command: 'sleep infinity'
     restart: always
     ports:
@@ -14,11 +14,12 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/system:/tmp/
+      - ./src/static:/tmp/static
 
 
   django_oauth2_backend:
     build: .
-    container_name: 'django_oauth2_backend'
+    container_name: webapp.oauth2
     command: 'sleep infinity'
     ports:
       - '8000:8000'
@@ -31,9 +32,10 @@ services:
       - /home/ec2-user/.aws:/home/ec2-user/.aws
       - /home/ec2-user/.ssh:/home/ec2-user/.ssh
       - ./.cache:/home/ec2-user/.cache
+      - ./nginx/system:/tmp/
     environment:
       - PATH:/home/ec2-user/.poetry/bin:/usr/local/bin:/usr/bin:/user/local/sbin:/home/ec2-user/.local/bin:$PATH
-      - DB_HOST=django_oauth_pgdb
+      - DB_HOST=webdb.oauth2
       - DB_NAME=django_oauth
       - DB_USER=admin
       - DB_PASSWORD=admin
@@ -45,7 +47,7 @@ services:
 
   pgdb:
     image: postgres:alpine
-    container_name: django_oauth_pgdb
+    container_name: webdb.oauth2
     restart: always
     volumes:
       - django_oauth_pgsql_storage:/var/lib/postgresql/data
@@ -57,7 +59,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: django_oauth_pgadmin
+    container_name: webadmin.oauth2
     restart: always
     ports:
       - 8080:80
@@ -69,13 +71,13 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: django_oauth_redis
+    container_name: webcache.oauth2
     restart: always
     volumes:
       - django_oauth_redis_storage:/data
 
   redis-commander:
-    container_name: django_oauth_redis_commander
+    container_name: webcacheadmin.oauth2
     image: rediscommander/redis-commander:latest
     restart: always
     ports:
@@ -91,7 +93,7 @@ services:
     # poetry run python manage.py spectacular --file schema.yml
     # for displaying api doc on swaggerapi service.
     # support OpenAPI v3
-    container_name: django_oauth_swagger_openapi_v3
+    container_name: webdoc.oauth2
     image: swaggerapi/swagger-ui:latest
     environment:
       SWAGGER_JSON: '/schema.yml'

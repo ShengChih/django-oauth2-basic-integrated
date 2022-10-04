@@ -5,7 +5,6 @@ description = ""
 authors = ["ShengChih"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "django_oauth2_backend"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

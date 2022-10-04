@@ -130,3 +130,5 @@ dmypy.json
 *.log
 
 nginx/system/*
+src/static/*
+.vscode/*
