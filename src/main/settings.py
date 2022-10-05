@@ -16,7 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -152,8 +151,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         "APP": {
-            "client_id": "",
-            "secret": "",
+            "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+            "secret": os.environ.get("GOOGLE_SECRET_KEY"),
             "key": "",
         },
         "SCOPE": [
@@ -164,27 +163,32 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
     },
-    #    "facebook": {
-    #        "METHOD": "oauth2",
-    #        "SDK_URL": "//connect.facebook.net/{locale}/sdk.js",
-    #        "SCOPE": ["email", "public_profile"],
-    #        "AUTH_PARAMS": {"auth_type": "reauthenticate"},
-    #        "INIT_PARAMS": {"cookie": True},
-    #        "FIELDS": [
-    #            "id",
-    #            "first_name",
-    #            "last_name",
-    #            "middle_name",
-    #            "name",
-    #            "name_format",
-    #            "picture",
-    #            "short_name",
-    #        ],
-    #        "EXCHANGE_TOKEN": True,
-    #        "LOCALE_FUNC": lambda request: "zh_TW",
-    #        "VERIFIED_EMAIL": False,
-    #        "VERSION": "v13.0",
-    #    },
+    "facebook": {
+        "METHOD": "oauth2",
+        "SDK_URL": "//connect.facebook.net/{locale}/sdk.js",
+        "SCOPE": ["email", "public_profile"],
+        "AUTH_PARAMS": {"auth_type": "reauthenticate"},
+        "INIT_PARAMS": {"cookie": True},
+        "FIELDS": [
+            "id",
+            "first_name",
+            "last_name",
+            "middle_name",
+            "name",
+            "name_format",
+            "picture",
+            "short_name",
+        ],
+        "EXCHANGE_TOKEN": True,
+        "LOCALE_FUNC": lambda request: "zh_TW",
+        "VERIFIED_EMAIL": False,
+        "VERSION": "v13.0",
+        'APP': {
+             'client_id': os.environ.get("FACEBOOK_CLIENT_ID"),
+             'secret': os.environ.get("FACEBOOK_SECRET_KEY"),
+             'key': ''
+        }
+    },
     #    "apple": {
     #        "APP": {
     #            # Your service identifier.
@@ -214,7 +218,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/home/ec2-user/django_oauth2_backend/log/debug.log',
+            'filename': '/tmp/django_debug.log',
         },
     },
     'formatters': {

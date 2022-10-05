@@ -1,30 +1,28 @@
 FROM python:latest
 ENV TZ=Asia/Taipei
-RUN apt-get update -qq && \
-    apt-get install -y sudo
-#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-#    apt-get update -qq && \
-#    apt-get install -y locales \
-#        build-essential \
-#        curl \
-#        git \
-#        sudo \
-#        vim \
-#        net-tools \
-#        ncdu \
-#        procps \
-#        htop \
-#        tmux
-RUN useradd -ms /bin/bash ec2-user && \
+ARG GOOGLE_CLIENT_ID=
+ARG GOOGLE_SECRET_KEY=
+ARG FACEBOOK_CLIENT_ID=
+ARG FACEBOOK_SECRET_KEY=
+ARG ROOT_PASS=123456
+ARG USER_PASS=123456
+RUN apt-get update -qq && apt-get install -y sudo && \
+    useradd -ms /bin/bash ec2-user && \
     sudo usermod -aG sudo,root ec2-user && \
-    echo "root:`tr -dc A-Za-z0-9 </dev/urandom | head -c 13`" > /home/ec2-user/root_passwd && \
-    cat /home/ec2-user/root_passwd | chpasswd && \
+    echo "root:$ROOT_PASS" | chpasswd && \
     mkdir -p /home/ec2-user/django_oauth2_backend/ && chown ec2-user: /home/ec2-user/django_oauth2_backend/ && \
-    echo "ec2-user:`tr -dc A-Za-z0-9 </dev/urandom | head -c 13`" > /home/ec2-user/ec2-user_passwd && \
-    echo "ec2-user  ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+    echo "ec2-user:$USER_PASS" | chpasswd
 USER ec2-user
-ENV PATH=/usr/local/bin:/usr/bin:/user/local/sbin:/home/ec2-user/.local/bin::/home/ec2-user/.poetry/bin:$PATH
-RUN sudo /usr/local/bin/python -m pip install --upgrade pip && \
-    curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH=/usr/local/bin:/usr/bin:/user/local/sbin:/home/ec2-user/.local/bin:$PATH \
+    GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
+    GOOGLE_SECRET_KEY=$GOOGLE_SECRET_KEY \
+    FACEBOOK_CLIENT_ID=$FACEBOOK_CLIENT_ID \
+    FACEBOOK_SECRET_KEY=$FACEBOOK_SECRET_KEY
 WORKDIR /home/ec2-user/django_oauth2_backend/
+COPY poetry.lock .
+COPY pyproject.toml .
+RUN echo "$ROOT_PASS" | sudo -S /usr/local/bin/python -m pip install --upgrade pip && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
+    echo "$ROOT_PASS" | su -c 'poetry install'
 CMD ["sleep", "infinity"]
+# CMD ["poetry", "run", "uwsgi", "--ini", "uwsgi.ini"]
