@@ -20,9 +20,13 @@ ENV PATH=/usr/local/bin:/usr/bin:/user/local/sbin:/home/ec2-user/.local/bin:$PAT
     FACEBOOK_SECRET_KEY=$FACEBOOK_SECRET_KEY
 WORKDIR /home/ec2-user/django_oauth2_backend/
 COPY poetry.lock .
+COPY poetry.toml .
 COPY pyproject.toml .
 RUN echo "$ROOT_PASS" | sudo -S /usr/local/bin/python -m pip install --upgrade pip && \
     curl -sSL https://install.python-poetry.org | python3 - && \
     echo "$ROOT_PASS" | su -c 'poetry install'
 CMD ["sleep", "infinity"]
+# 不建立 virtualenv
 # CMD ["poetry", "run", "uwsgi", "--ini", "uwsgi.ini"]
+# 若建立 virtualenv
+# CMD . .venv/bin/activate && exec python src/manage.py

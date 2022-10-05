@@ -59,6 +59,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "libs.middlewares.request.RequestMiddleware",
+    # "libs.middlewares.global_request.GlobalRequestMiddleware",  # optional
 ]
 
 ROOT_URLCONF = "main.urls"
@@ -239,3 +241,8 @@ LOGGING = {
         },
     },
 }
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
