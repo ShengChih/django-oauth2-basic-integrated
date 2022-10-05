@@ -20,7 +20,15 @@ services:
   django_oauth2_backend:
     build: .
     container_name: webapp.oauth2
+    # for debugging
     command: 'sleep infinity'
+    # for development
+    #command: >
+    #  "poetry run src/manage.py migrate &&
+    #  poetry run runserver 0.0.0.0:8000"
+    # for production
+    #command: >
+    #  "uwsgi --ini uwsgi.ini"
     ports:
       - '8000:8000'
     build:
@@ -31,10 +39,8 @@ services:
       - ./:/home/ec2-user/django_oauth2_backend
       - /home/ec2-user/.aws:/home/ec2-user/.aws
       - /home/ec2-user/.ssh:/home/ec2-user/.ssh
-      - ./.cache:/home/ec2-user/.cache
       - ./nginx/system:/tmp/
     environment:
-      - PATH:/home/ec2-user/.poetry/bin:/usr/local/bin:/usr/bin:/user/local/sbin:/home/ec2-user/.local/bin:$PATH
       - DB_HOST=webdb.oauth2
       - DB_NAME=django_oauth
       - DB_USER=admin
@@ -57,17 +63,17 @@ services:
       POSTGRES_PASSWORD: admin
       PG_DATA: /var/lib/postgresql/data
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: webadmin.oauth2
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      PGADMIN_DEFAULT_EMAIL: 'ms0529756@gmail.com'
-      PGADMIN_DEFAULT_PASSWORD: 'ms0529756@gmail.com'
-    volumes:
-      - django_oauth_pgadmin_storage:/var/lib/pgadmin
+  #pgadmin:
+  #  image: dpage/pgadmin4
+  #  container_name: webadmin.oauth2
+  #  restart: always
+  #  ports:
+  #    - 8080:80
+  #  environment:
+  #    PGADMIN_DEFAULT_EMAIL: 'ms0529756@gmail.com'
+  #    PGADMIN_DEFAULT_PASSWORD: 'ms0529756@gmail.com'
+  #  volumes:
+  #    - django_oauth_pgadmin_storage:/var/lib/pgadmin
 
   redis:
     image: redis:alpine
@@ -76,31 +82,31 @@ services:
     volumes:
       - django_oauth_redis_storage:/data
 
-  redis-commander:
-    container_name: webcacheadmin.oauth2
-    image: rediscommander/redis-commander:latest
-    restart: always
-    ports:
-      - 5005:8081
-    environment:
-      #- URL_PREFIX=/redis-management
-      - REDIS_HOSTS=redis:redis:6379
-    depends_on:
-      - redis
+  #redis-commander:
+  #  container_name: webcacheadmin.oauth2
+  #  image: rediscommander/redis-commander:latest
+  #  restart: always
+  #  ports:
+  #    - 5005:8081
+  #  environment:
+  #    #- URL_PREFIX=/redis-management
+  #    - REDIS_HOSTS=redis:redis:6379
+  #  depends_on:
+  #    - redis
 
 
-  swaggerapi:
-    # poetry run python manage.py spectacular --file schema.yml
-    # for displaying api doc on swaggerapi service.
-    # support OpenAPI v3
-    container_name: webdoc.oauth2
-    image: swaggerapi/swagger-ui:latest
-    environment:
-      SWAGGER_JSON: '/schema.yml'
-    volumes:
-      - ./src/schema.yml:/schema.yml
-    ports:
-      - 8081:8080
+  #swaggerapi:
+  #  # poetry run python manage.py spectacular --file schema.yml
+  #  # for displaying api doc on swaggerapi service.
+  #  # support OpenAPI v3
+  #  container_name: webdoc.oauth2
+  #  image: swaggerapi/swagger-ui:latest
+  #  environment:
+  #    SWAGGER_JSON: '/schema.yml'
+  #  volumes:
+  #    - ./src/schema.yml:/schema.yml
+  #  ports:
+  #    - 8081:8080
 
 
 networks:
