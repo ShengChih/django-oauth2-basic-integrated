@@ -1,4 +1,16 @@
 [[package]]
+name = "aiosmtpd"
+version = "1.4.2"
+description = "aiosmtpd - asyncio based SMTP server"
+category = "dev"
+optional = false
+python-versions = "~=3.6"
+
+[package.dependencies]
+atpublic = "*"
+attrs = "*"
+
+[[package]]
 name = "asgiref"
 version = "3.5.2"
 description = "ASGI specs, helper code, and adapters"
@@ -8,6 +20,14 @@ python-versions = ">=3.7"
 
 [package.extras]
 tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
+
+[[package]]
+name = "atpublic"
+version = "3.1.1"
+description = "Keep all y'all's __all__'s in sync"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
 
 [[package]]
 name = "attrs"
@@ -464,12 +484,20 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7854b3e25e7b654b3633d12994ec71a64b74099dc252955372e3e0fef62efa4b"
+content-hash = "f59ddda583b549b25e61273912579dc764265ce2baa5121bf61070df05dd61a1"
 
 [metadata.files]
+aiosmtpd = [
+    {file = "aiosmtpd-1.4.2-py3-none-any.whl", hash = "sha256:314f70b74cb8474882cef396b186fbfad8660c7b52be5c1937f3c31df14232a4"},
+    {file = "aiosmtpd-1.4.2.tar.gz", hash = "sha256:aa891d010d2097274189078c6ce2a59a167f3fb2e974e028b572a61e92e1549c"},
+]
 asgiref = [
     {file = "asgiref-3.5.2-py3-none-any.whl", hash = "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4"},
     {file = "asgiref-3.5.2.tar.gz", hash = "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"},
+]
+atpublic = [
+    {file = "atpublic-3.1.1-py3-none-any.whl", hash = "sha256:37f714748e77b8a7b34d59b7b485fd452a0d5906be52cb1bd28d29a2bd84f295"},
+    {file = "atpublic-3.1.1.tar.gz", hash = "sha256:3098ee12d0107cc5009d61f4e80e5edcfac4cda2bdaa04644af75827cb121b18"},
 ]
 attrs = [
     {file = "attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
