@@ -7,6 +7,11 @@ up:
 down:
 	docker-compose down --remove-orphans
 
+restart:
+	docker-compose restart
+
+clean:
+	docker container prune && docker volume prune && docker image prune
 
 # Container command
 schema:
