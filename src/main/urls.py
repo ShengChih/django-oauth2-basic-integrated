@@ -16,9 +16,10 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path, include
 from main import views
+from social_auth.urls import urlpatterns as auth_urlpatterns
 
 urlpatterns = [
     path('', views.index, name='index'),
     # path("admin/", admin.site.urls),
-    path("accounts/", include("allauth.urls")),
-]
+    # path("accounts/", include("allauth.urls")),
+] + [path(r'^api/', include(auth_urlpatterns))]
