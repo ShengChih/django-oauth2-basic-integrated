@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "djaAngo.contrib.sites",
+    "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",

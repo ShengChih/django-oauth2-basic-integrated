@@ -30,19 +30,26 @@ class ExchangeGoogleSerializer(ExchangeProviderSerializer):
         return data
 
     def verify_token(self):
-        is_valid = self.utils.verify_id_token(
+        return self.utils.verify_id_token(
             self.validated_data.get('email'),
             self.validated_data.get('id_token')
         )
 
-        if not is_valid:
+    def login_user(self):
+        if not self.verify_token():
             raise Exception("Google ID token is invalid")
 
-    def get_user_model(self):
-        return self.utils.get_user(
+        user = self.utils.login_user(
             self.validated_data.get('email'),
             self.validated_data.get('access_token')
         )
+
+        if not user:
+            raise Exception("User not found")
+
+        return user
+
+        
 
 
 PROVIDER_SERIALIERS = {

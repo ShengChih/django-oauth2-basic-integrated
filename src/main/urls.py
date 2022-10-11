@@ -21,5 +21,5 @@ from social_auth.urls import urlpatterns as auth_urlpatterns
 urlpatterns = [
     path('', views.index, name='index'),
     # path("admin/", admin.site.urls),
-    # path("accounts/", include("allauth.urls")),
-] + [path(r'^api/', include(auth_urlpatterns))]
+    path("accounts/", include("allauth.urls")),
+] + [path('api/', include(auth_urlpatterns))]
