@@ -156,6 +156,22 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SITE_ID = 1
 
 # Provider specific settings
+SOCIAL_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+            "secret": os.environ.get("GOOGLE_SECRET_KEY")
+        }
+    },
+    "facebook": {
+        "VERSION": "v15.0",
+        'APP': {
+            'client_id': os.environ.get("FACEBOOK_CLIENT_ID"),
+            'secret': os.environ.get("FACEBOOK_SECRET_KEY"),
+        }
+    }
+}
+
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         # For each OAuth based provider, either add a ``SocialApp``
@@ -182,6 +198,7 @@ SOCIALACCOUNT_PROVIDERS = {
         "INIT_PARAMS": {"cookie": True},
         "FIELDS": [
             "id",
+            "email",
             "first_name",
             "last_name",
             "middle_name",

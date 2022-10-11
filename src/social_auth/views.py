@@ -25,7 +25,9 @@ def exchange_token(request):
         serializer = serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.login_user()
+        user = serializer.login_user_with_token()
+        if not user:
+            raise Exception("User login failure")
         tokens = get_tokens_for_user(user)
     except Exception:
         logger.error(traceback.format_exc())
