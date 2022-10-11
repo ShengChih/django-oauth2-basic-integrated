@@ -36,7 +36,7 @@ class ExchangeProviderSerializer(serializers.Serializer):
 
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            is_created, user = User.object.update_or_create(
+            user, is_created = User.object.update_or_create(
                 email=email,
                 defaults=self.utils.init_profile_to_user(user_profile)
             )
